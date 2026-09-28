@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lameth Lameth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Metal+Mania&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#0a0608">
+<style>
+  :root {
+    --bg: #0a0608;
+    --surface: #170f12;
+    --surface-2: #22151a;
+    --border: #3a2229;
+    --text: #e9e2dd;
+    --text-muted: #9c8489;
+    --gold: #c9a06a;
+    --ember: #c9663f;
+    --crimson: #a8203f;
+    --blood: #ff1a3d;
+    --accent: var(--gold);
+    --accent-soft: rgba(201,160,106,0.16);
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); height: 100%; }
+  *, *::before, *::after { box-sizing: inherit; }
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: radial-gradient(ellipse at top, #1c0d10 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+  }
+  .app { width: 100%; max-width: 480px; padding: 28px 20px 40px; }
+
+  header { text-align: center; margin-bottom: 20px; }
+  .brand-metal {
+    font-family: 'Metal Mania', cursive;
+    font-size: clamp(2rem, 10.5vw, 2.8rem);
+    line-height: 0.72;
+    letter-spacing: -0.06em;
+    margin: 0;
+    text-transform: uppercase;
+    color: #d9d3cc;
+    text-shadow:
+      2px 2px 0 #000,
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000;
+    filter: contrast(1.15);
+  }
+  .brand-metal .row { display: block; white-space: nowrap; }
+  .brand-metal span { display: inline-block; }
+  .brand-metal .row:first-child { transform: skewX(-6deg) scaleY(1.1); }
+  .brand-metal .row:last-child { transform: skewX(4deg) scaleY(1.15) translateY(-2px); }
+  .brand-metal span:nth-child(odd) { transform: translateY(-5px) rotate(-7deg); }
+  .brand-metal span:nth-child(even) { transform: translateY(4px) rotate(6deg); }
+  .brand-metal span:nth-child(3n) { transform: translateY(-8px) rotate(-11deg) scaleY(1.2); }
+  .brand-metal span:nth-child(5n) { transform: translateY(6px) rotate(9deg) scaleY(1.1); }
+  .zigzag { display: block; margin: 6px auto 0; opacity: 0.9; }
+  .tagline {
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    margin-top: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .view-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+  .view-toggle button {
+    flex: 1; padding: 10px 4px; border-radius: 12px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-muted); font-family: 'Work Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  }
+  .view-toggle button.active { background: var(--surface-2); color: var(--accent); border-color: var(--accent); }
+
+  .previa-row {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; gap: 10px; padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .previa-row:last-child { border-bottom: none; }
+  .previa-cat {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-muted); flex: 0 0 78px;
+  }
+  .previa-val {
+    flex: 1; font-family: 'Fraunces', Georgia, serif; font-size: 1rem;
+    color: var(--text);
+  }
+  .previa-reroll {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 0.85rem;
+    padding: 4px 8px; cursor: pointer; flex-shrink: 0;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background-image: repeating-linear-gradient(115deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
+    mix-blend-mode: overlay;
+  }
+
+  #gateOverlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: #0a0608;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gate-box {
+    width: 260px; text-align: center;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .gate-title { font-size: 2.4rem; margin-bottom: 8px; }
+  .gate-box input {
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); border-radius: 10px; padding: 12px;
+    font-family: 'Work Sans', sans-serif; font-size: 1rem; text-align: center;
+  }
+  .gate-box button {
+    background: var(--gold); border: none; color: #1c1108;
+    border-radius: 10px; padding: 12px; font-family: 'Fraunces', serif;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+  }
+  .gate-error { color: var(--blood); font-size: 0.8rem; }
+
+  nav.modes {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+  nav.modes button {
+    flex: 1;
+    padding: 10px 2px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  nav.modes button.active { background: var(--surface-2); color: var(--text); }
+
+  .levels { display: flex; gap: 6px; margin-bottom: 22px; }
+  .levels button {
+    flex: 1;
+    padding: 9px 2px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .levels button[data-level="suave"].active { background: var(--gold); border-color: var(--gold); color: #1c1108; }
+  .levels button[data-level="intermedio"].active { background: var(--ember); border-color: var(--ember); color: #1c1108; }
+  .levels button[data-level="hot"].active { background: var(--crimson); border-color: var(--crimson); color: #fbe8ea; }
+  .levels button[data-level="exxxtreme"].active { background: var(--blood); border-color: var(--blood); color: #fff; box-shadow: 0 0 14px rgba(255,26,61,0.6); }
+
+  .stage {
+    position: relative;
+    min-height: 280px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  .stage::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 0%, var(--accent-soft), transparent 60%);
+    pointer-events: none;
+    transition: background .3s;
+  }
+  .stage .kicker {
+    font-size: 0.72rem;
+    text-transform: none;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 14px;
+    letter-spacing: 0.03em;
+    transition: color .3s;
+  }
+  .stage .card-text {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.4rem;
+    line-height: 1.35;
+    font-weight: 500;
+    max-width: 34ch;
+  }
+  .stage .empty {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    max-width: 30ch;
+    line-height: 1.5;
+  }
+  .vor-choices { display: flex; gap: 10px; width: 100%; }
+  .vor-choices button {
+    flex: 1;
+    padding: 14px 6px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .12s, background .2s;
+  }
+  .vor-choices button:active { transform: scale(0.96); }
+  .vor-choices button[data-vor="verdad"]:hover { background: var(--gold); color: #1c1108; }
+  .vor-choices button[data-vor="reto"]:hover { background: var(--ember); color: #1c1108; }
+  .vor-escape {
+    background: none; border: 1px dashed var(--border);
+    color: var(--text-muted); font-family: 'Work Sans', sans-serif;
+    font-size: 0.76rem; padding: 6px 12px; border-radius: 999px;
+    cursor: pointer; margin-top: -4px; margin-bottom: 12px;
+  }
+  .tag {
+    display: inline-block; font-size: 0.7rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 999px; margin-bottom: 10px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .wheel-wrap {
+    position: relative;
+    width: 200px; height: 200px;
+    margin: 4px auto 18px;
+    display: none;
+  }
+  .wheel-wrap.show { display: block; }
+  .wheel-pointer {
+    position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 16px solid var(--accent);
+    z-index: 2;
+    transition: border-top-color .3s;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.6));
+  }
+  .wheel {
+    width: 100%; height: 100%; border-radius: 50%;
+    border: 4px solid var(--border);
+    position: relative;
+    transform: rotate(0deg);
+    transition: transform 4s cubic-bezier(.15,.65,.15,1);
+    box-shadow: inset 0 0 24px rgba(0,0,0,0.5);
+    background: conic-gradient(
+      var(--surface-2) 0deg 45deg, var(--surface) 45deg 90deg,
+      var(--surface-2) 90deg 135deg, var(--surface) 135deg 180deg,
+      var(--surface-2) 180deg 225deg, var(--surface) 225deg 270deg,
+      var(--surface-2) 270deg 315deg, var(--surface) 315deg 360deg
+    );
+  }
+  .wheel-hub {
+    position: absolute; top: 50%; left: 50%;
+    width: 34px; height: 34px; margin: -17px 0 0 -17px;
+    border-radius: 50%; background: var(--surface);
+    border: 2px solid var(--border);
+    z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+  }
+  .wheel-label {
+    position: absolute; top: 50%; left: 50%;
+    width: 0; height: 0;
+    font-size: 0.72rem; font-weight: 600; color: var(--text);
+  }
+  .wheel-label span {
+    position: absolute;
+    left: -10px; top: -74px;
+    width: 20px; text-align: center;
+  }
+
+  .timer-row { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+  .ring { position: relative; width: 46px; height: 46px; flex-shrink: 0; }
+  .ring svg { transform: rotate(-90deg); width: 46px; height: 46px; }
+  .ring circle { fill: none; stroke-width: 4; }
+  .ring .track { stroke: var(--border); }
+  .ring .fill { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke .3s; }
+  .ring span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--text); font-variant-numeric: tabular-nums; }
+  .timer-btn {
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  .draw-btn {
+    margin-top: 24px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    background: var(--accent);
+    color: #1c1108;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .12s, background .3s;
+  }
+  .draw-btn:active { transform: scale(0.97); }
+  .levels button[data-level="hot"].active ~ * { }
+
+  footer { display: flex; justify-content: center; margin-top: 18px; }
+  .edit-link {
+    background: none; border: none; color: var(--text-muted);
+    font-family: inherit; font-size: 0.8rem; text-decoration: underline;
+    text-underline-offset: 3px; cursor: pointer; padding: 8px;
+  }
+
+  /* Editor overlay */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(10,6,8,0.82);
+    display: none; align-items: flex-end; justify-content: center;
+    z-index: 20; backdrop-filter: blur(2px);
+  }
+  .overlay.open { display: flex; }
+  .sheet {
+    width: 100%; max-width: 480px; max-height: 82vh;
+    background: var(--surface); border: 1px solid var(--border);
+    border-top-left-radius: 20px; border-top-right-radius: 20px;
+    padding: 20px 18px calc(20px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+  }
+  .sheet h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 600; margin: 0 0 4px; font-size: 1.2rem; }
+  .sheet .sub { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 14px; }
+  .sheet select, .sheet input[type="text"], .sheet input[type="number"] {
+    width: 100%; background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); border-radius: 10px; padding: 10px 12px; font-family: inherit;
+    font-size: 0.9rem; margin-bottom: 10px;
+  }
+  .entry-row {
+    display: flex; gap: 8px; align-items: flex-start;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px; margin-bottom: 8px;
+  }
+  .entry-row textarea {
+    flex: 1; background: transparent; border: none; color: var(--text);
+    font-family: inherit; font-size: 0.85rem; resize: vertical; min-height: 40px;
+  }
+  .entry-row .meta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .entry-row .meta input { width: 64px; text-align: center; margin: 0; padding: 6px; }
+  .entry-row .del { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; padding: 2px 4px; }
+  .add-row {
+    width: 100%; padding: 10px; border-radius: 10px; border: 1px dashed var(--border);
+    background: transparent; color: var(--accent); font-family: inherit; font-size: 0.85rem;
+    cursor: pointer; margin-top: 4px;
+  }
+  .sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .sheet-actions button {
+    flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--border);
+    font-family: inherit; font-size: 0.85rem; cursor: pointer;
+  }
+  .sheet-actions .close { background: var(--surface-2); color: var(--text); }
+
+  /* free timer overlay */
+  .fab {
+    position: fixed; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); right: 22px;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    font-size: 1.2rem; cursor: pointer; z-index: 15;
+  }
+</style>
+</head>
+<body>
+<div id="gateOverlay">
+  <div class="gate-box">
+    <div class="gate-title">🖤</div>
+    <input type="password" id="gatePass" placeholder="Contraseña" autocomplete="off">
+    <button id="gateBtn">Entrar</button>
+    <div class="gate-error" id="gateError" style="display:none;">Contraseña incorrecta.</div>
+  </div>
+</div>
+<div class="app">
+  <header>
+    <h1 class="brand-metal">
+      <span class="row"><span>L</span><span>A</span><span>M</span><span>E</span><span>T</span><span>H</span></span>
+      <span class="row"><span>L</span><span>A</span><span>M</span><span>E</span><span>T</span><span>H</span></span>
+    </h1>
+    <svg class="zigzag" width="160" height="14" viewBox="0 0 160 14"><polyline points="0,12 8,2 16,10 24,1 32,13 40,3 48,11 56,0 64,12 72,2 80,10 88,1 96,13 104,3 112,11 120,0 128,12 136,2 144,10 152,1 160,13" fill="none" stroke="#c9c2ba" stroke-width="1.4"/></svg>
+    <div class="tagline">un juego para dos</div>
+  </header>
+
+  <div class="view-toggle">
+    <button data-view="jugar" class="active">Jugar</button>
+    <button data-view="previa">La previa</button>
+  </div>
+
+  <div id="viewJugar">
+
+  <nav class="modes">
+    <button data-mode="cartas" class="active">Cartas</button>
+    <button data-mode="vor">Verdad o reto</button>
+    <button data-mode="ruleta">Ruleta</button>
+  </nav>
+
+  <div class="levels">
+    <button data-level="suave" class="active">Suave</button>
+    <button data-level="intermedio">Intermedio</button>
+    <button data-level="hot">Hot</button>
+    <button data-level="exxxtreme">Exxxtreme</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="kicker" id="kicker">Listos para empezar</div>
+    <div class="wheel-wrap" id="wheelWrap">
+      <div class="wheel-pointer"></div>
+      <div class="wheel" id="wheelEl">
+        <div class="wheel-hub">🖤</div>
+        <div class="wheel-label" style="transform:rotate(22.5deg);"><span style="transform:rotate(-22.5deg);">1</span></div>
+        <div class="wheel-label" style="transform:rotate(67.5deg);"><span style="transform:rotate(-67.5deg);">2</span></div>
+        <div class="wheel-label" style="transform:rotate(112.5deg);"><span style="transform:rotate(-112.5deg);">3</span></div>
+        <div class="wheel-label" style="transform:rotate(157.5deg);"><span style="transform:rotate(-157.5deg);">4</span></div>
+        <div class="wheel-label" style="transform:rotate(202.5deg);"><span style="transform:rotate(-202.5deg);">5</span></div>
+        <div class="wheel-label" style="transform:rotate(247.5deg);"><span style="transform:rotate(-247.5deg);">6</span></div>
+        <div class="wheel-label" style="transform:rotate(292.5deg);"><span style="transform:rotate(-292.5deg);">7</span></div>
+        <div class="wheel-label" style="transform:rotate(337.5deg);"><span style="transform:rotate(-337.5deg);">8</span></div>
+      </div>
+    </div>
+    <div class="vor-choices" id="vorChoices" style="display:none;">
+      <button data-vor="verdad">Verdad</button>
+      <button data-vor="reto">Reto</button>
+    </div>
+    <button class="vor-escape" id="vorEscape" style="display:none;">Prefiero la prenda</button>
+    <span class="tag" id="resultTag" style="display:none;"></span>
+    <div class="empty" id="cardText">Elegí modo y nivel, después tocá el botón para sacar la primera.</div>
+    <div class="timer-row" id="timerRow" style="display:none;">
+      <div class="ring">
+        <svg viewBox="0 0 46 46"><circle class="track" cx="23" cy="23" r="19"/><circle class="fill" id="ringFill" cx="23" cy="23" r="19" stroke-dasharray="119" stroke-dashoffset="0"/></svg>
+        <span id="ringLabel">--</span>
+      </div>
+      <button class="timer-btn" id="timerToggle">Iniciar</button>
+    </div>
+  </div>
+
+  <button class="draw-btn" id="drawBtn">Sacar</button>
+
+  <footer>
+    <button class="edit-link" id="editLink">Editar mazos</button>
+  </footer>
+  </div>
+
+  <div id="viewPrevia" style="display:none;">
+    <div class="stage" id="previaStage">
+      <div class="kicker">La previa</div>
+      <div class="previa-row">
+        <span class="previa-cat">Lugar</span>
+        <span class="previa-val" id="previaVal_lugar">—</span>
+        <button class="previa-reroll" data-cat="lugar">🔄</button>
+      </div>
+      <div class="previa-row">
+        <span class="previa-cat">Música</span>
+        <span class="previa-val" id="previaVal_musica">—</span>
+        <button class="previa-reroll" data-cat="musica">🔄</button>
+      </div>
+      <div class="previa-row">
+        <span class="previa-cat">Atuendo</span>
+        <span class="previa-val" id="previaVal_atuendo">—</span>
+        <button class="previa-reroll" data-cat="atuendo">🔄</button>
+      </div>
+      <div class="previa-row">
+        <span class="previa-cat">Juguetes</span>
+        <span class="previa-val" id="previaVal_juguetes">—</span>
+        <button class="previa-reroll" data-cat="juguetes">🔄</button>
+      </div>
+    </div>
+    <button class="draw-btn" id="previaDrawBtn">Armar la previa</button>
+    <footer>
+      <button class="edit-link" id="previaEditLink">Editar la previa</button>
+    </footer>
+  </div>
+</div>
+
+<button class="fab" id="fab" title="Temporizador libre">⏱</button>
+
+<div class="overlay" id="freeOverlay">
+  <div class="sheet">
+    <h2>Temporizador libre</h2>
+    <div class="sub">Para usar en cualquier momento, sin depender de una carta.</div>
+    <div class="levels" style="margin-bottom:14px;">
+      <button data-secs="30">30 s</button>
+      <button data-secs="60">1 min</button>
+      <button data-secs="120">2 min</button>
+      <button data-secs="180">3 min</button>
+    </div>
+    <div class="timer-row" style="justify-content:center;">
+      <div class="ring">
+        <svg viewBox="0 0 46 46"><circle class="track" cx="23" cy="23" r="19"/><circle class="fill" id="freeRingFill" cx="23" cy="23" r="19" stroke-dasharray="119" stroke-dashoffset="0"/></svg>
+        <span id="freeRingLabel">--</span>
+      </div>
+      <button class="timer-btn" id="freeToggle">Iniciar</button>
+    </div>
+    <div class="sheet-actions">
+      <button class="close" id="closeFree">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="previaEditOverlay">
+  <div class="sheet">
+    <h2>Editar la previa</h2>
+    <div class="sub">Los cambios se guardan en este dispositivo.</div>
+    <select id="previaEditCat">
+      <option value="lugar">Lugar</option>
+      <option value="musica">Música</option>
+      <option value="atuendo">Atuendo</option>
+      <option value="juguetes">Juguetes</option>
+    </select>
+    <div id="previaEntryList"></div>
+    <button class="add-row" id="previaAddEntry">+ Agregar</button>
+    <div class="sheet-actions">
+      <button class="close" id="previaCloseEdit">Listo</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="editOverlay">
+  <div class="sheet">
+    <h2 id="sheetTitle">Editar cartas</h2>
+    <div class="sub">Los cambios se guardan en este dispositivo.</div>
+    <select id="editMode">
+      <option value="cartas">Cartas</option>
+      <option value="vor">Verdad y reto</option>
+      <option value="prenda">Prendas</option>
+      <option value="ruleta">Segmentos de la ruleta</option>
+    </select>
+    <select id="editSub" style="display:none;">
+      <option value="verdad">Verdad</option>
+      <option value="reto">Reto</option>
+    </select>
+    <select id="editLevel">
+      <option value="suave">Suave</option>
+      <option value="intermedio">Intermedio</option>
+      <option value="hot">Hot</option>
+      <option value="exxxtreme">Exxxtreme</option>
+    </select>
+    <div id="entryList"></div>
+    <button class="add-row" id="addEntry">+ Agregar</button>
+    <div class="sheet-actions">
+      <button class="close" id="closeEdit">Listo</button>
+    </div>
+    <div class="sub" style="margin-top:18px;">¿Cargaste contenido en otro navegador (por ejemplo el de Claude) y acá no aparece? Copialo ahí y pegalo acá.</div>
+    <div class="sheet-actions">
+      <button class="close" id="exportBtn">Copiar todo</button>
+      <button class="close" id="importBtn">Pegar código</button>
+    </div>
+    <textarea id="transferArea" style="display:none;width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px;font-family:monospace;font-size:0.68rem;min-height:90px;margin-top:8px;"></textarea>
+    <div class="sheet-actions" id="importConfirmRow" style="display:none;">
+      <button class="close" id="applyImport">Aplicar lo pegado</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var GATE_PASS = 'IX241279';
+  var GATE_KEY = 'lameth-unlocked';
+  var gateOverlay = document.getElementById('gateOverlay');
+  var gatePass = document.getElementById('gatePass');
+  var gateBtn = document.getElementById('gateBtn');
+  var gateError = document.getElementById('gateError');
+
+  function tryUnlock(){
+    if (gatePass.value === GATE_PASS){
+      try { localStorage.setItem(GATE_KEY, '1'); } catch(e){}
+      gateOverlay.style.display = 'none';
+    } else {
+      gateError.style.display = 'block';
+      gatePass.value = '';
+      gatePass.focus();
+    }
+  }
+  var alreadyUnlocked = false;
+  try { alreadyUnlocked = localStorage.getItem(GATE_KEY) === '1'; } catch(e){}
+  if (alreadyUnlocked){
+    gateOverlay.style.display = 'none';
+  } else {
+    gateBtn.addEventListener('click', tryUnlock);
+    gatePass.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryUnlock(); });
+    gatePass.focus();
+  }
+
+  function advanceTurn(){ /* sistema de turnos eliminado */ }
+
+  var STORAGE_KEY = 'a-solas-decks-v2';
+
+  var defaults = {
+    cartas: {
+      suave: [
+        {t:"Hagan un beso lento, sin apuro.", d:60},
+        {t:"Uno le da un masaje de manos al otro.", d:60},
+        {t:"Suéltense el pelo y cepíllenlo despacio.", d:30},
+        {t:"Bailen pegados una canción, sin celular cerca.", d:0}
+      ],
+      intermedio: [
+        {t:"Besen el cuello del otro sin usar las manos.", d:60},
+        {t:"Sáquense una prenda cada uno, despacio.", d:0},
+        {t:"Uno venda los ojos del otro por el resto de la ronda.", d:0},
+        {t:"Recorran el cuerpo del otro solo con la punta de los dedos.", d:90}
+      ],
+      hot: [
+        {t:"Sáquense toda la ropa de arriba, sin apuro.", d:0},
+        {t:"El que recibió el 'reto' anterior elige dónde seguir.", d:0},
+        {t:"Bésense de pie contra la pared un minuto entero.", d:60},
+        {t:"Uno decide una posición para seguir la ronda siguiente.", d:0}
+      ],
+      exxxtreme: [
+        {t:"Sáquense toda la ropa, los dos, ahora.", d:0},
+        {t:"Uno da las órdenes el resto de la ronda.", d:0},
+        {t:"Sin límites: hagan lo que la carta anterior dejó a medias.", d:0}
+      ]
+    },
+    vor: {
+      suave: {
+        verdad: [
+          {t:"¿qué fue lo que más te gustó de mí la primera vez que me viste?"},
+          {t:"¿qué canción te recuerda a nosotros?"}
+        ],
+        reto: [
+          {t:"Decime al oído algo que te guste de mi cuerpo.", d:0},
+          {t:"Dame un beso donde vos quieras.", d:0}
+        ]
+      },
+      intermedio: {
+        verdad: [
+          {t:"¿qué fantasía nunca me contaste?"},
+          {t:"¿qué parte de mi cuerpo te gusta más?"}
+        ],
+        reto: [
+          {t:"Sacate una prenda mientras me mirás a los ojos.", d:0},
+          {t:"Besame el cuello un minuto entero.", d:60}
+        ]
+      },
+      hot: {
+        verdad: [
+          {t:"Contame el sueño más caliente que tuviste conmigo."}
+        ],
+        reto: [
+          {t:"Mostrame cómo te gusta que te toque, con tu propia mano.", d:0},
+          {t:"Elegí una prenda mía para sacar vos.", d:0}
+        ]
+      },
+      exxxtreme: {
+        verdad: [
+          {t:"¿Qué es lo más intenso que te gustaría probar conmigo?"}
+        ],
+        reto: [
+          {t:"Hacé lo que la carta de recién dejó a medias, sin cortar.", d:0}
+        ]
+      }
+    },
+    prenda: {
+      suave: [
+        {t:"Dale un beso en la frente al otro.", d:0}
+      ],
+      intermedio: [
+        {t:"Sacate una prenda, la que quieras.", d:0}
+      ],
+      hot: [
+        {t:"Sacate una prenda a elección del otro.", d:0}
+      ],
+      exxxtreme: [
+        {t:"El otro elige qué te sacás, y cómo.", d:0}
+      ]
+    },
+    ruleta: {
+      suave: [
+        {t:"Abrazo de 20 segundos sin soltar.", d:20},
+        {t:"Beso en la frente.", d:0},
+        {t:"Decile un cumplido sincero.", d:0},
+        {t:"Caricia en el pelo.", d:30},
+        {t:"Beso en la mano.", d:0},
+        {t:"Miradas fijas sin reírse.", d:15},
+        {t:"Beso en la mejilla.", d:0},
+        {t:"Abrazo por detrás.", d:20}
+      ],
+      intermedio: [
+        {t:"Beso en el cuello.", d:0},
+        {t:"Sacate una prenda, la que quieras.", d:0},
+        {t:"Masaje de hombros.", d:60},
+        {t:"Susurrale algo al oído.", d:0},
+        {t:"Beso lento en la boca.", d:30},
+        {t:"Recorré su brazo con los dedos.", d:30},
+        {t:"Elegí vos la próxima carta.", d:0},
+        {t:"Beso donde el otro señale.", d:0}
+      ],
+      hot: [
+        {t:"Sacate una prenda más.", d:0},
+        {t:"Beso en el cuello sin usar las manos.", d:60},
+        {t:"Vendale los ojos por esta ronda.", d:0},
+        {t:"Elegís la posición para seguir.", d:0},
+        {t:"Un minuto de caricias, sin hablar.", d:60},
+        {t:"El otro decide qué sigue.", d:0},
+        {t:"Beso de pie contra la pared.", d:60},
+        {t:"Repetí lo último que salió.", d:0}
+      ],
+      exxxtreme: [
+        {t:"Sin ropa el resto de la ronda.", d:0},
+        {t:"Manda quien gira, sin excepción.", d:60},
+        {t:"Repetí todo lo que salió hasta ahora.", d:0},
+        {t:"El otro decide el final de la ronda.", d:0},
+        {t:"Doble turno: girá de nuevo después.", d:0},
+        {t:"Sin límites, como quieran.", d:0},
+        {t:"Elegí vos el próximo modo de juego.", d:0},
+        {t:"Todo vale por los próximos 2 minutos.", d:120}
+      ]
+    },
+    previa: {
+      lugar: [
+        {t:"El living, con las luces bajas."},
+        {t:"El dormitorio."},
+        {t:"La terraza o el balcón, de noche."},
+        {t:"La cocina."},
+        {t:"El auto, estacionado en algún lugar tranquilo."},
+        {t:"La ducha o la bañera."}
+      ],
+      musica: [
+        {t:"Algo lento e instrumental."},
+        {t:"La playlist favorita de los dos."},
+        {t:"Silencio total, solo voces."},
+        {t:"Algo con textura de vinilo."},
+        {t:"Black metal de fondo, bien bajo."},
+        {t:"Jazz suave."}
+      ],
+      atuendo: [
+        {t:"Ropa interior negra."},
+        {t:"Como estén, sin cambiarse."},
+        {t:"Esa prenda especial guardada para la ocasión."},
+        {t:"Solo una camisa o remera prestada."},
+        {t:"Algo nuevo, sin estrenar."},
+        {t:"Nada debajo de la ropa de calle."}
+      ],
+      juguetes: [
+        {t:"Ninguno, solo manos."},
+        {t:"Vendas para los ojos."},
+        {t:"Plumas o algo que haga cosquillas."},
+        {t:"Aceite o crema para masajes."},
+        {t:"Hielo."},
+        {t:"Algún vibrador."},
+        {t:"Cuerdas o ataduras suaves."},
+        {t:"Sorpresa: lo que tengan a mano."}
+      ]
+    }
+  };
+
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+  function fillMissing(target, source){
+    for (var k in source){
+      if (!(k in target)){
+        target[k] = clone(source[k]);
+      } else if (
+        typeof source[k] === 'object' && source[k] !== null && !Array.isArray(source[k]) &&
+        typeof target[k] === 'object' && target[k] !== null && !Array.isArray(target[k])
+      ){
+        fillMissing(target[k], source[k]);
+      }
+    }
+  }
+
+  function load(){
+    var loaded = null;
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) loaded = JSON.parse(raw);
+    } catch(e){}
+    if (!loaded) return clone(defaults);
+    fillMissing(loaded, defaults);
+    return loaded;
+  }
+  function save(){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(decks)); } catch(e){}
+  }
+
+  var decks = load();
+  save();
+  var state = { mode: 'cartas', level: 'suave', usedIdx: {} };
+
+  var modeLabels = { cartas: 'Cartas', vor: 'Verdad o reto', ruleta: 'Ruleta' };
+  var actionLabels = { cartas: 'Sacar carta', vor: 'Sacar', ruleta: 'Girar' };
+
+  var stageEl = document.getElementById('stage');
+  var kickerEl = document.getElementById('kicker');
+  var cardTextEl = document.getElementById('cardText');
+  var drawBtn = document.getElementById('drawBtn');
+  var timerRow = document.getElementById('timerRow');
+  var ringFill = document.getElementById('ringFill');
+  var ringLabel = document.getElementById('ringLabel');
+  var timerToggle = document.getElementById('timerToggle');
+  var vorChoices = document.getElementById('vorChoices');
+  var vorEscape = document.getElementById('vorEscape');
+  var resultTag = document.getElementById('resultTag');
+
+  var timerInterval = null, timerRemaining = 0, timerTotal = 0, timerRunning = false;
+  var CIRC = 119;
+  var vorPhase = 'choose'; // 'choose' | 'revealed'
+  var wheelWrap = document.getElementById('wheelWrap');
+  var wheelEl = document.getElementById('wheelEl');
+  var wheelRotation = 0;
+  var wheelSpinning = false;
+
+  var wakeLock = null;
+  async function keepScreenAwake(){
+    try {
+      if ('wakeLock' in navigator){
+        wakeLock = await navigator.wakeLock.request('screen');
+      }
+    } catch(e){ /* no soportado o rechazado, seguimos igual */ }
+  }
+  function releaseScreenAwake(){
+    try { if (wakeLock){ wakeLock.release(); wakeLock = null; } } catch(e){}
+  }
+
+  var audioCtx = null;
+  function unlockAudio(){
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e){ /* audio no disponible en este navegador */ }
+  }
+
+  function playAlarm(){
+    try {
+      if (!audioCtx) unlockAudio();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      var ctx = audioCtx;
+      var beeps = [0, 0.22, 0.44];
+      beeps.forEach(function(t){
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime + t);
+        gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + t + 0.18);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + t);
+        osc.stop(ctx.currentTime + t + 0.2);
+      });
+    } catch(e){ /* audio no disponible */ }
+    try { if (navigator.vibrate) navigator.vibrate([180,90,180,90,260]); } catch(e){}
+  }
+
+  function pickFrom(pool, key){
+    if (!pool || !pool.length) return null;
+    var used = state.usedIdx[key] || [];
+    if (used.length >= pool.length) used = [];
+    var avail = [];
+    for (var i=0;i<pool.length;i++) if (used.indexOf(i) === -1) avail.push(i);
+    var idx = avail[Math.floor(Math.random()*avail.length)];
+    used.push(idx);
+    state.usedIdx[key] = used;
+    return pool[idx];
+  }
+
+  function pickEntry(){
+    var pool = (decks[state.mode] && decks[state.mode][state.level]) || [];
+    return pickFrom(pool, state.mode + '|' + state.level);
+  }
+
+  function stopTimer(){
+    clearInterval(timerInterval);
+    timerInterval = null; timerRunning = false;
+    timerToggle.textContent = 'Iniciar';
+    releaseScreenAwake();
+  }
+
+  function setupTimer(seconds){
+    stopTimer();
+    if (!seconds){ timerRow.style.display = 'none'; return; }
+    timerRow.style.display = 'flex';
+    timerTotal = seconds; timerRemaining = seconds;
+    updateRing();
+  }
+
+  function updateRing(){
+    var pct = timerTotal ? (timerRemaining/timerTotal) : 0;
+    ringFill.setAttribute('stroke-dashoffset', String(CIRC * (1-pct)));
+    var m = Math.floor(timerRemaining/60), s = timerRemaining%60;
+    ringLabel.textContent = (m>0 ? m+':'+(s<10?'0':'')+s : s+'s');
+  }
+
+  timerToggle.addEventListener('click', function(){
+    if (timerRunning){ stopTimer(); return; }
+    unlockAudio();
+    timerRunning = true;
+    timerToggle.textContent = 'Pausar';
+    keepScreenAwake();
+    timerInterval = setInterval(function(){
+      timerRemaining--;
+      updateRing();
+      if (timerRemaining <= 0){
+        stopTimer();
+        ringLabel.textContent = '✓';
+        playAlarm();
+      }
+    }, 1000);
+  });
+
+  function showText(text, duration, tagLabel){
+    stageEl.classList.remove('empty');
+    vorChoices.style.display = 'none';
+    cardTextEl.style.display = 'block';
+    if (tagLabel){
+      resultTag.textContent = tagLabel;
+      resultTag.style.display = 'inline-block';
+    } else {
+      resultTag.style.display = 'none';
+    }
+    cardTextEl.textContent = text;
+    setupTimer(duration || 0);
+  }
+
+  var levelLabels = { suave: 'Suave', intermedio: 'Intermedio', hot: 'Hot', exxxtreme: 'Exxxtreme' };
+
+  var editLinkLabels = { cartas: 'Editar cartas', vor: 'Editar preguntas, retos y prendas', ruleta: 'Editar segmentos de la ruleta' };
+  var sheetTitles = { cartas: 'Editar cartas', vor: 'Verdad y reto', prenda: 'Prendas', ruleta: 'Segmentos de la ruleta' };
+
+  function render(){
+    kickerEl.textContent = modeLabels[state.mode] + ' · ' + levelLabels[state.level];
+    wheelWrap.classList.toggle('show', state.mode === 'ruleta');
+    resultTag.style.display = 'none';
+    editLink.textContent = editLinkLabels[state.mode] || 'Editar contenido';
+    if (state.mode === 'vor'){
+      vorPhase = 'choose';
+      drawBtn.style.display = 'none';
+      vorChoices.style.display = 'flex';
+      vorEscape.style.display = 'none';
+      cardTextEl.style.display = 'block';
+      cardTextEl.textContent = '¿Verdad o reto?';
+      stageEl.classList.add('empty');
+      timerRow.style.display = 'none';
+    } else {
+      drawBtn.style.display = 'block';
+      drawBtn.textContent = actionLabels[state.mode];
+      vorChoices.style.display = 'none';
+      vorEscape.style.display = 'none';
+      cardTextEl.style.display = 'block';
+      cardTextEl.textContent = 'Elegí modo y nivel, después tocá el botón para sacar la primera.';
+      stageEl.classList.add('empty');
+      timerRow.style.display = 'none';
+    }
+  }
+
+  function revealEntry(){
+    var entry = pickEntry();
+    if (!entry){
+      stageEl.classList.add('empty');
+      cardTextEl.textContent = 'No hay contenido en este mazo todavía. Agregá desde "Editar mazos".';
+      timerRow.style.display = 'none';
+      return;
+    }
+    showText(entry.t, entry.d);
+    advanceTurn();
+  }
+
+  function revealVor(sub, skipAdvance){
+    var pool, key, label;
+    if (sub === 'prenda'){
+      pool = (decks.prenda && decks.prenda[state.level]) || [];
+      key = 'prenda|' + state.level;
+      label = 'Prenda';
+    } else {
+      pool = (decks.vor && decks.vor[state.level] && decks.vor[state.level][sub]) || [];
+      key = 'vor|' + state.level + '|' + sub;
+      label = sub === 'verdad' ? 'Verdad' : 'Reto';
+    }
+    var entry = pickFrom(pool, key);
+    vorPhase = 'revealed';
+    drawBtn.style.display = 'block';
+    drawBtn.textContent = 'Nueva ronda';
+    vorEscape.style.display = (sub === 'prenda') ? 'none' : 'inline-block';
+    if (!entry){
+      vorChoices.style.display = 'none';
+      resultTag.textContent = label;
+      resultTag.style.display = 'inline-block';
+      cardTextEl.style.display = 'block';
+      stageEl.classList.add('empty');
+      cardTextEl.textContent = 'No hay contenido en este mazo todavía. Agregá desde "Editar mazos".';
+      return;
+    }
+    showText(entry.t, entry.d, label);
+    if (!skipAdvance) advanceTurn();
+  }
+
+  function spinWheel(){
+    if (wheelSpinning) return;
+    wheelSpinning = true;
+    var idx = Math.floor(Math.random()*8);
+    var jitter = (Math.random()*20 - 10); // +-10deg dentro del gajo, nunca toca el borde
+    var theta = idx*45 + 22.5 + jitter;
+    var targetMod = ((360 - theta) % 360 + 360) % 360;
+    var currentMod = ((wheelRotation % 360) + 360) % 360;
+    var diff = ((targetMod - currentMod) + 360) % 360;
+    wheelRotation += 5*360 + diff;
+    wheelEl.style.transform = 'rotate(' + wheelRotation + 'deg)';
+    setTimeout(function(){
+      wheelSpinning = false;
+      var pool = (decks.ruleta && decks.ruleta[state.level]) || [];
+      var entry = pool[idx];
+      if (!entry){
+        stageEl.classList.add('empty');
+        cardTextEl.textContent = 'Ese segmento de la ruleta no tiene contenido todavía.';
+        timerRow.style.display = 'none';
+        return;
+      }
+      showText(entry.t, entry.d, 'Salió el ' + (idx+1));
+      advanceTurn();
+    }, 4200);
+  }
+
+  drawBtn.addEventListener('click', function(){
+    if (state.mode === 'ruleta'){
+      spinWheel();
+    } else if (state.mode === 'vor'){
+      render(); // back to choose phase
+    } else {
+      revealEntry();
+    }
+  });
+
+  vorChoices.querySelectorAll('button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      revealVor(btn.getAttribute('data-vor'));
+    });
+  });
+  vorEscape.addEventListener('click', function(){
+    revealVor('prenda', true);
+  });
+
+  document.querySelectorAll('nav.modes button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('nav.modes button').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.mode = btn.getAttribute('data-mode');
+      render();
+    });
+  });
+
+  document.querySelectorAll('.levels button[data-level]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.levels button[data-level]').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.level = btn.getAttribute('data-level');
+      var root = document.documentElement;
+      var softMap = {
+        suave: 'rgba(201,160,106,0.16)',
+        intermedio: 'rgba(201,102,63,0.18)',
+        hot: 'rgba(168,32,63,0.2)',
+        exxxtreme: 'rgba(255,26,61,0.24)'
+      };
+      if (state.level === 'suave') root.style.setProperty('--accent', 'var(--gold)');
+      if (state.level === 'intermedio') root.style.setProperty('--accent', 'var(--ember)');
+      if (state.level === 'hot') root.style.setProperty('--accent', 'var(--crimson)');
+      if (state.level === 'exxxtreme') root.style.setProperty('--accent', 'var(--blood)');
+      root.style.setProperty('--accent-soft', softMap[state.level] || softMap.suave);
+      render();
+    });
+  });
+
+  // ---- Editor ----
+  var editOverlay = document.getElementById('editOverlay');
+  var editLink = document.getElementById('editLink');
+  var closeEdit = document.getElementById('closeEdit');
+  var editMode = document.getElementById('editMode');
+  var editLevel = document.getElementById('editLevel');
+  var entryList = document.getElementById('entryList');
+  var addEntry = document.getElementById('addEntry');
+
+  var editSub = document.getElementById('editSub');
+  var sheetTitle = document.getElementById('sheetTitle');
+
+  function currentPool(){
+    var mode = editMode.value, level = editLevel.value;
+    if (mode === 'vor') return (decks.vor[level] && decks.vor[level][editSub.value]) || [];
+    return (decks[mode] && decks[mode][level]) || [];
+  }
+  function setPool(newPool){
+    var mode = editMode.value, level = editLevel.value;
+    if (mode === 'vor') decks.vor[level][editSub.value] = newPool;
+    else decks[mode][level] = newPool;
+  }
+
+  function renderEntries(){
+    var mode = editMode.value;
+    var isRuleta = mode === 'ruleta';
+    var isFixed = isRuleta;
+    editSub.style.display = (mode === 'vor') ? 'block' : 'none';
+    addEntry.style.display = isFixed ? 'none' : 'block';
+    sheetTitle.textContent = sheetTitles[mode] || 'Editar contenido';
+    var pool = currentPool();
+    entryList.innerHTML = '';
+    pool.forEach(function(entry, i){
+      var row = document.createElement('div');
+      row.className = 'entry-row';
+      row.innerHTML =
+        (isFixed ? '<div style="color:var(--text-muted);font-size:0.75rem;padding-top:10px;">'+(i+1)+'</div>' : '') +
+        '<textarea data-i="'+i+'" placeholder="Texto de la carta">'+ (entry.t||'') +'</textarea>' +
+        '<div class="meta">' +
+          '<input type="number" min="0" step="5" data-i="'+i+'" class="dur" value="'+(entry.d||0)+'" title="Segundos (0 = sin tiempo)">' +
+          (isFixed ? '' : '<button class="del" data-i="'+i+'">✕</button>') +
+        '</div>';
+      entryList.appendChild(row);
+    });
+    entryList.querySelectorAll('textarea').forEach(function(ta){
+      ta.addEventListener('input', function(){
+        var i = +ta.getAttribute('data-i');
+        currentPool()[i].t = ta.value;
+        save();
+      });
+    });
+    entryList.querySelectorAll('.dur').forEach(function(inp){
+      inp.addEventListener('input', function(){
+        var i = +inp.getAttribute('data-i');
+        currentPool()[i].d = parseInt(inp.value||'0',10);
+        save();
+      });
+    });
+    entryList.querySelectorAll('.del').forEach(function(b){
+      b.addEventListener('click', function(){
+        var i = +b.getAttribute('data-i');
+        var pool = currentPool();
+        pool.splice(i,1);
+        setPool(pool);
+        save();
+        renderEntries();
+      });
+    });
+  }
+
+  editLink.addEventListener('click', function(){
+    editMode.value = state.mode;
+    editLevel.value = state.level;
+    editSub.value = 'verdad';
+    renderEntries();
+    editOverlay.classList.add('open');
+  });
+  closeEdit.addEventListener('click', function(){ editOverlay.classList.remove('open'); });
+
+  var exportBtn = document.getElementById('exportBtn');
+  var importBtn = document.getElementById('importBtn');
+  var applyImport = document.getElementById('applyImport');
+  var transferArea = document.getElementById('transferArea');
+  var importConfirmRow = document.getElementById('importConfirmRow');
+
+  exportBtn.addEventListener('click', function(){
+    importConfirmRow.style.display = 'none';
+    transferArea.readOnly = true;
+    transferArea.value = JSON.stringify(decks);
+    transferArea.style.display = 'block';
+    transferArea.focus();
+    transferArea.select();
+    try { navigator.clipboard.writeText(transferArea.value); } catch(e){}
+  });
+
+  importBtn.addEventListener('click', function(){
+    transferArea.readOnly = false;
+    transferArea.value = '';
+    transferArea.placeholder = 'Pegá acá el código que copiaste del otro navegador...';
+    transferArea.style.display = 'block';
+    importConfirmRow.style.display = 'flex';
+    transferArea.focus();
+  });
+
+  applyImport.addEventListener('click', function(){
+    try {
+      var parsed = JSON.parse(transferArea.value);
+      decks = parsed;
+      fillMissing(decks, defaults);
+      save();
+      renderEntries();
+      importConfirmRow.style.display = 'none';
+      transferArea.style.display = 'none';
+    } catch(e){
+      alert('Ese código no se pudo leer. Revisá que lo hayas copiado completo.');
+    }
+  });
+  editMode.addEventListener('change', renderEntries);
+  editSub.addEventListener('change', renderEntries);
+  editLevel.addEventListener('change', renderEntries);
+  addEntry.addEventListener('click', function(){
+    var mode = editMode.value, level = editLevel.value;
+    if (mode === 'ruleta') return; // espacios fijos
+    var pool = currentPool();
+    pool.push({t:'', d:0});
+    setPool(pool);
+    save();
+    renderEntries();
+  });
+
+  // ---- Free timer ----
+  var freeOverlay = document.getElementById('freeOverlay');
+  var fab = document.getElementById('fab');
+  var closeFree = document.getElementById('closeFree');
+  var freeRingFill = document.getElementById('freeRingFill');
+  var freeRingLabel = document.getElementById('freeRingLabel');
+  var freeToggle = document.getElementById('freeToggle');
+  var freeInterval = null, freeRemaining = 0, freeTotal = 0, freeRunning = false;
+
+  function stopFree(){ clearInterval(freeInterval); freeInterval=null; freeRunning=false; freeToggle.textContent='Iniciar'; releaseScreenAwake(); }
+  function updateFreeRing(){
+    var pct = freeTotal ? (freeRemaining/freeTotal) : 0;
+    freeRingFill.setAttribute('stroke-dashoffset', String(CIRC*(1-pct)));
+    var m = Math.floor(freeRemaining/60), s = freeRemaining%60;
+    freeRingLabel.textContent = (m>0? m+':'+(s<10?'0':'')+s : s+'s');
+  }
+  document.querySelectorAll('#freeOverlay .levels button[data-secs]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      stopFree();
+      freeTotal = +btn.getAttribute('data-secs');
+      freeRemaining = freeTotal;
+      updateFreeRing();
+    });
+  });
+  freeToggle.addEventListener('click', function(){
+    if (freeRunning){ stopFree(); return; }
+    if (!freeTotal) return;
+    unlockAudio();
+    freeRunning = true; freeToggle.textContent = 'Pausar';
+    keepScreenAwake();
+    freeInterval = setInterval(function(){
+      freeRemaining--; updateFreeRing();
+      if (freeRemaining<=0){ stopFree(); freeRingLabel.textContent='✓'; playAlarm(); }
+    }, 1000);
+  });
+  fab.addEventListener('click', function(){ freeOverlay.classList.add('open'); });
+  closeFree.addEventListener('click', function(){ freeOverlay.classList.remove('open'); stopFree(); });
+
+  // ---- Vista: Jugar / La previa ----
+  var viewJugar = document.getElementById('viewJugar');
+  var viewPrevia = document.getElementById('viewPrevia');
+  document.querySelectorAll('.view-toggle button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.view-toggle button').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var view = btn.getAttribute('data-view');
+      viewJugar.style.display = (view === 'jugar') ? 'block' : 'none';
+      viewPrevia.style.display = (view === 'previa') ? 'block' : 'none';
+    });
+  });
+
+  // ---- La previa: sorteo ----
+  var previaCats = ['lugar', 'musica', 'atuendo', 'juguetes'];
+  function drawPreviaCat(cat){
+    var pool = (decks.previa && decks.previa[cat]) || [];
+    var entry = pickFrom(pool, 'previa|' + cat);
+    var el = document.getElementById('previaVal_' + cat);
+    el.textContent = entry ? entry.t : 'Agregá opciones desde "Editar la previa".';
+  }
+  function drawPreviaAll(){
+    previaCats.forEach(drawPreviaCat);
+  }
+  document.getElementById('previaDrawBtn').addEventListener('click', drawPreviaAll);
+  document.querySelectorAll('.previa-reroll').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      drawPreviaCat(btn.getAttribute('data-cat'));
+    });
+  });
+
+  // ---- La previa: editor ----
+  var previaEditOverlay = document.getElementById('previaEditOverlay');
+  var previaEditLink = document.getElementById('previaEditLink');
+  var previaEditCat = document.getElementById('previaEditCat');
+  var previaEntryList = document.getElementById('previaEntryList');
+  var previaAddEntry = document.getElementById('previaAddEntry');
+  var previaCloseEdit = document.getElementById('previaCloseEdit');
+
+  function previaRenderEntries(){
+    var cat = previaEditCat.value;
+    var pool = (decks.previa && decks.previa[cat]) || [];
+    previaEntryList.innerHTML = '';
+    pool.forEach(function(entry, i){
+      var row = document.createElement('div');
+      row.className = 'entry-row';
+      row.innerHTML =
+        '<textarea data-i="'+i+'" placeholder="Opción">'+ (entry.t||'') +'</textarea>' +
+        '<div class="meta"><button class="del" data-i="'+i+'">✕</button></div>';
+      previaEntryList.appendChild(row);
+    });
+    previaEntryList.querySelectorAll('textarea').forEach(function(ta){
+      ta.addEventListener('input', function(){
+        var i = +ta.getAttribute('data-i');
+        decks.previa[cat][i].t = ta.value;
+        save();
+      });
+    });
+    previaEntryList.querySelectorAll('.del').forEach(function(b){
+      b.addEventListener('click', function(){
+        var i = +b.getAttribute('data-i');
+        decks.previa[cat].splice(i,1);
+        save();
+        previaRenderEntries();
+      });
+    });
+  }
+  previaEditLink.addEventListener('click', function(){
+    previaEditCat.value = 'lugar';
+    previaRenderEntries();
+    previaEditOverlay.classList.add('open');
+  });
+  previaEditCat.addEventListener('change', previaRenderEntries);
+  previaAddEntry.addEventListener('click', function(){
+    var cat = previaEditCat.value;
+    decks.previa[cat].push({t:''});
+    save();
+    previaRenderEntries();
+  });
+  previaCloseEdit.addEventListener('click', function(){ previaEditOverlay.classList.remove('open'); });
+
+  render();
+})();
+</script>
+</body>
+</html>
